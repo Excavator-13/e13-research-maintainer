@@ -63,8 +63,8 @@ research/
     commands.log                  # 精确命令
     scripts/ inputs/ outputs/
   archives/
-    index.md                      # 保存状态、SHA256、入库依据、备份核验
-    <run-id>.tar.gz(+.sha256)     # 包外校验，不做自指哈希
+    index.md                      # 保存状态、内容身份、入库依据、备份核验
+    <run-id>.tar.gz(+.sha256)     # 放在 Git 之外时加包外校验，不做自指哈希
     migrations/<id>.md            # 旧路径到标准职责的映射与限制
 ```
 
