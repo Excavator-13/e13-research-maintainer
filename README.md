@@ -30,8 +30,8 @@ research-maintainer/
   agents/openai.yaml            # Codex 界面元数据（显示名与默认 prompt）
   references/
     records.md                  # 标准目录、权威记录划分、各类记录模板
-    transitions.md              # 接手、部分完成、新发现、收尾、首次规范化
-    archive-and-git.md          # 封存、Git 入库、推送与异地备份
+    transitions.md              # 接手、部分完成、新发现、收尾、停止规则、首次规范化
+    archive-and-git.md          # 按请求：封存、Git 入库、推送与异地备份
 ```
 
 ## 资料路由
@@ -42,7 +42,7 @@ skill 采用渐进式披露，只读当前动作需要的参考文件：
 | --- | --- |
 | 初始化 / 规范化 / 新增记录 | [`references/records.md`](research-maintainer/references/records.md) |
 | 接手 / 部分完成 / 中断 / 新建议 / 阶段变更 | [`references/transitions.md`](research-maintainer/references/transitions.md) |
-| 封存 / 核验 / 提交 / 推送 / 恢复 | [`references/archive-and-git.md`](research-maintainer/references/archive-and-git.md) |
+| 用户明确要求封存 / 提交 / 推送 / 恢复核验 | [`references/archive-and-git.md`](research-maintainer/references/archive-and-git.md) |
 
 ## 记录结构
 
@@ -76,10 +76,11 @@ research/
 - **恢复依据来自文件与证据。** 摘要中的推断不得升级为已验证事实。
 - **按子任务判断进度。** 一轮运行成功 ≠ 任务完成；一个任务完成 ≠ 阶段完成。
 - **新建议有状态。** 先登记证据与候选建议，接受后才更新受影响的计划。
-- **运行、封存、提交、备份分别记录。** 已提交可能尚未备份，各自需要独立核验依据。
+- **运行、封存、提交、备份分别陈述。** 已提交可能尚未备份，不得互相冒充；核验按用户请求进行，未核验的如实写明。
 - **运行来源是历史身份。** 记录执行源码基准 commit 加实际差异，不要求等于当前 HEAD。
 - **封存证据不可变。** 后续分析、解释修订和协议变更使用新记录并链接旧证据。
 - **授权边界沿用。** 使用本 skill 本身不授权租机、启动实验、迁移文件、commit 或 push。
+- **按请求停止。** 每个请求有明确完成点；到达后结束本轮，不追加未要求的检查、打包、Git 操作或核验。未知事项可保持未知。
 
 ## 安装与使用
 
@@ -88,7 +89,7 @@ research/
 使用示例：
 
 ```text
-用 $research-maintainer 接手这个科研项目，恢复当前进度并维护计划、证据和归档。
+用 $research-maintainer 接手这个科研项目，恢复当前进度并维护计划、决策与实验来源。
 ```
 
 典型调用场景：
@@ -96,17 +97,18 @@ research/
 - **初始化 / 规范化**：把已有项目的散乱记录映射到标准结构。未获迁移授权时只给出具体映射与差异，不移动文件。
 - **接手 / 继续**：先读 `RESEARCH.md`、`research/state.md`、当前 phase plan 和相关未决建议，再核对实际文件、Git 状态与运行证据，输出简短恢复报告。
 - **执行工作**：为本次工作关联 task ID（必要时创建 run ID），实际开始后才标 `in_progress`，更新恢复位置与下一动作。
-- **暂停 / 交接 / 收尾**：核对真实产物与进程，更新任务状态、证据链接、未解决项与精确恢复点；未完成的核验记录原因，不补写为成功。
+- **暂停 / 交接 / 收尾**：核对真实产物与进程，更新任务状态、证据链接、未解决项与精确恢复点；未完成的核验记录原因，不补写为成功。记录齐备即结束本轮，不追加后续检查。
 
 状态取值：阶段 `planned / active / completed / cancelled`，任务 `todo / in_progress / blocked / paused / done / cancelled`，建议 `proposed / accepted / rejected / superseded`，运行 `prepared / running / succeeded / failed / interrupted / unknown`。
 
 ## 不做什么
 
 - 不授权实验、租机、文件迁移、commit 或 push —— 这些取决于用户本次请求与既有授权；
+- 不默认执行封存、打包、备份或恢复演练 —— 只按用户当次请求的范围执行；
 - 不替代代码实现、独立验证流程或项目的开发规范；
 - 不修改已封存包及其内部结果，也不因目录规范自动上传数据；
 - 项目数据集、模型和历史文件名不决定 skill 的规则，科学协议内容由项目自身确定。
 
 ## 核验情景
 
-`SKILL.md` 末尾列出可用于回归核对的具体情景，例如：阶段只完成两个子任务时，新 agent 应能定位第三个子任务，既不从头重跑也不宣称阶段完成；封存后完成 push 时，备份状态在外部索引更新，封存摘要不被重写。
+`SKILL.md` 末尾列出可用于回归核对的具体情景，例如：阶段只完成两个子任务时，新 agent 应能定位第三个子任务，既不从头重跑也不宣称阶段完成；封存后完成 push 时，备份状态在外部索引更新，封存摘要不被重写；用户要求结束工作时，本轮不新增检查项，未知的保持未知，且不把取消项写成待办。
